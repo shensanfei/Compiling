@@ -30,6 +30,7 @@ int output(int flag,char* buffer){
             printf("Gt");
         else{
             printf("Err\n");
+             printf("%s\n",buffer);
             return -1;
         }
         printf("\n");
