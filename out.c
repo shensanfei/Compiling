@@ -30,7 +30,7 @@ int output(int flag,char* buffer){
             printf("Gt");
         else{
             printf("Err\n");
-             printf("%s\n",buffer);
+            
             return -1;
         }
         printf("\n");
@@ -136,7 +136,7 @@ char* getWord(FILE* fp){
     while(( c = fgetc(fp)) != EOF ){
        
         p = (char*)malloc(sizeof(char)*100);
-        if(c == ' ' || c == '\n')
+        if(c == ' ' || c == '\n' || c == '\t' || c == '\r')
             continue;
         else{
             if(isDigit(c)){
