@@ -1,4 +1,4 @@
 FROM openjdk:12
 WORKDIR /app/
-COPY *.java ./
+COPY ./* ./
 RUN javac lab01.java
