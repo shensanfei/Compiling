@@ -1,7 +1,7 @@
-[jobs.lexer]
+[jobs.lab1]
 
-image = { source = "dockerfile", path = "."}
+image = { source = "dockerfile", path = ".", tag = "pascal-lex-example" }
 
 run = [
-  "./out $input",
+  "java lab01 $input $ir",
 ]
