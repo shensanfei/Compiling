@@ -1,5 +1,6 @@
-FROM gcc:10
+FROM openjdk:12
 WORKDIR /app/
-COPY out.c ./
-RUN gcc out.c -o out
-RUN chmod +x out
+COPY lab01.java ./
+COPY token.java ./
+COPY Grammar.java ./
+RUN javac lab01.java
