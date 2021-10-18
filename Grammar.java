@@ -10,8 +10,8 @@ public class Grammar {
 
     public static String sys(File fp,String o) throws IOException {
 
-        types = new String[100];
-        tokens = new String[100];
+        types = new String[500];
+        tokens = new String[500];
         
 
         BufferedReader reader = new BufferedReader(new FileReader(fp));
