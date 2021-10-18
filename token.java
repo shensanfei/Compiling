@@ -3,10 +3,10 @@ import java.io.*;
 public class token {
     private static Writer fileWriter;
 
-    public static String getToken(File fp) throws IOException {
-        BufferedReader reader;
-
-        reader = new BufferedReader(new FileReader(fp));
+    public static String getToken(String in)throws IOException {
+        
+        File fp = new File(in);
+        BufferedReader reader = new BufferedReader(new FileReader(fp));
         String line = new String();
 
         File out = new File("shenShuoTemp.txt");

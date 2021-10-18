@@ -7,9 +7,13 @@ class lab01 {
         String out = args[1];
         String s;
 
-       
+        s = PassAnnotation.passAnnotation(args[0]);
 
-        s = token.getToken(fp);
+        if(s==null) {
+            throw new IOException("Wrong!");
+        }
+
+        s = token.getToken(s);
 
         // System.out.println(s);
     
@@ -20,6 +24,8 @@ class lab01 {
         if(s==null) {
             throw new IOException("Wrong!");
         }
+
+        System.out.println(s);
         
     }
 }

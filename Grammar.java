@@ -35,12 +35,15 @@ public class Grammar {
         if(flag) {
             fileWriter = new FileWriter(out.getPath(), true);
             fileWriter.write("define dso_local i32 @main(){\n");
+            
             fileWriter.write("ret i32 "+Number+"\n");
             fileWriter.write("}\n");
+
 
             System.out.println("define dso_local i32 @main(){");
             System.out.println("ret i32 "+Number+" ");
             System.out.println("}");
+
 
             fileWriter.close();
             return out.getPath();
