@@ -35,6 +35,7 @@ public class PassAnnotation {
         
         for(int i=0;i<line.length();i++){
             char c = line.charAt(i);
+            if(i != line.length()-1){
             if (c == '/' && line.charAt(i+1) == '/') {
                 // space
                 
@@ -47,6 +48,11 @@ public class PassAnnotation {
                     inAnnotation = 0;
                 }
             }else{
+                if(inAnnotation == 0)
+                    fileWriter.write(c);
+            }
+        }
+        else{
                 if(inAnnotation == 0)
                     fileWriter.write(c);
             }
