@@ -78,6 +78,7 @@ public class Token {
             }
 
             fileWriter.write(temp + '\n');
+            System.out.println(temp);
         }
     }
 
