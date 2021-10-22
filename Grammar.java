@@ -199,11 +199,16 @@ public class Grammar {
         }
         top = staTop;
         if (tokenCheck("(") ) {
-            Boolean oldnegative = negative;
-            negative = false;
-            if(isExp()){
-                negative = oldnegative;
-                return tokenCheck(")");
+            if(negative){
+                negative = false;
+                save.add(0);
+                if(isExp()){
+                    save.add("-");
+                    return tokenCheck(")");
+                }
+            }
+            else{
+                    return isExp() && tokenCheck(")");
             }
             return false;
         }
@@ -217,6 +222,7 @@ public class Grammar {
         top = staTop;
         if (tokenCheck("-")){
             negative = !negative;
+            System.out.println("change negative");
             return true;
         }
         top = staTop;
