@@ -1,21 +1,35 @@
 import java.io.*;
+import java.util.ArrayList;
 
 public class Grammar {
 
     private static String[] types;
     private static String[] tokens;
+
     private static int Number;
     private static int[] numbers;
+
+    private static int ops;
+    private static String[] op;
+
+    private static ArrayList<Object>save;
+
     private static int numberTop = -1;
     private static int top = 0;
     private static boolean negative = false;
+
+
     private static Writer fileWriter;
 
     public static String sys(String in, String o) throws IOException {
 
         types = new String[100];
-        numbers = new int[100];
         tokens = new String[100];
+
+        numbers = new int[100];
+        op = new String[100];
+
+        save = new ArrayList<>();
 
         File fp = new File(in);
         BufferedReader reader = new BufferedReader(new FileReader(fp));
@@ -37,6 +51,7 @@ public class Grammar {
 
         boolean flag = (isCompUnit() && tokens[top] == null);
         if (flag) {
+            PrintInFile();
             fileWriter = new FileWriter(out.getPath(), true);
             fileWriter.write("define dso_local i32 @main(){\n");
 
@@ -107,6 +122,7 @@ public class Grammar {
                 Number = -Number;
             }
             negative = false;
+            save.add(Number);
             numbers[++numberTop] = Number;
             top++;
             return true;
@@ -129,16 +145,10 @@ public class Grammar {
         int staTop = top;
         if(tokens[top].charAt(0) == '+' || tokens[top].charAt(0) == '-' ){
             top++;
-            if(isMulExp() && isAddExpPro()){
-                System.out.println(numbers[numberTop-1] + " " + tokens[staTop].charAt(0) + " " + numbers[numberTop]);
-                numberTop--;
-                if(tokens[staTop].charAt(0) == '+'){
-                    numbers[numberTop] = numbers[numberTop] + numbers[numberTop+1]; 
-                }
-                else{
-                    numbers[numberTop] = numbers[numberTop] - numbers[numberTop+1]; 
-                }
-                return true;
+            if(isMulExp()){
+                save.add(tokens[staTop]);
+               
+                return  isAddExpPro();
             }
                 
             else
@@ -160,20 +170,9 @@ public class Grammar {
         if(tokens[top].charAt(0) == '*' || tokens[top].charAt(0) == '/' || 
             tokens[top].charAt(0) == '%' ){
             top++;
-            if(isUnaryExp() && isMulExpPro()){
-                System.out.println(tokens[staTop].charAt(0));
-                System.out.println(numbers[numberTop-1] + " " + tokens[staTop].charAt(0) + " " + numbers[numberTop]);
-                numberTop--;
-                if(tokens[staTop].charAt(0) == '*'){
-                    numbers[numberTop] = numbers[numberTop] * numbers[numberTop+1]; 
-                }
-                else if(tokens[staTop].charAt(0) == '/'){
-                    numbers[numberTop] = numbers[numberTop] / numbers[numberTop+1]; 
-                }
-                else{
-                    numbers[numberTop] = numbers[numberTop] % numbers[numberTop+1]; 
-                }
-                return true;
+            if(isUnaryExp() ){
+                save.add(tokens[staTop]);
+                return isMulExpPro();
             }
             else
                 return false;
@@ -234,5 +233,38 @@ public class Grammar {
         }
 
         return false;
+    }
+
+    private static void PrintInFile(){
+        numberTop = -1;
+        for (Object i : save) {
+            if(i instanceof Integer){
+                System.out.println("Integer " + (Integer)i);
+                numbers[++numberTop] = (Integer)i;
+            }
+            else if(i instanceof String){
+                System.out.println("Op " + (String)i);
+                numberTop--;
+                if(i.equals("+")){
+                    numbers[numberTop] = numbers[numberTop] + numbers[numberTop+1];
+                }
+                else if(i.equals("-")){
+                    numbers[numberTop] = numbers[numberTop] - numbers[numberTop+1];
+
+                }else if(i.equals("*")){
+                    numbers[numberTop] = numbers[numberTop] * numbers[numberTop+1];
+
+                }else if(i.equals("/")){
+                    numbers[numberTop] = numbers[numberTop] / numbers[numberTop+1];
+
+                }else if(i.equals("%")){
+                    numbers[numberTop] = numbers[numberTop] % numbers[numberTop+1];
+
+                }
+
+            }
+            
+        }
+        
     }
 }
