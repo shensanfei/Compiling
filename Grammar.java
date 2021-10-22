@@ -5,6 +5,8 @@ public class Grammar {
     private static String[] types;
     private static String[] tokens;
     private static int Number;
+    private static int[] numbers;
+    private static int numberTop = -1;
     private static int top = 0;
     private static boolean negative = false;
     private static Writer fileWriter;
@@ -12,6 +14,7 @@ public class Grammar {
     public static String sys(String in, String o) throws IOException {
 
         types = new String[100];
+        numbers = new int[100];
         tokens = new String[100];
 
         File fp = new File(in);
@@ -37,11 +40,11 @@ public class Grammar {
             fileWriter = new FileWriter(out.getPath(), true);
             fileWriter.write("define dso_local i32 @main(){\n");
 
-            fileWriter.write("ret i32 " + Number + "\n");
+            fileWriter.write("ret i32 " + numbers[numberTop] + "\n");
             fileWriter.write("}\n");
 
             System.out.println("define dso_local i32 @main(){");
-            System.out.println("ret i32 " + Number + " ");
+            System.out.println("ret i32 " + numbers[numberTop] + "\n ");
             System.out.println("}");
 
             fileWriter.close();
@@ -103,6 +106,8 @@ public class Grammar {
             if(negative){
                 Number = -Number;
             }
+            negative = false;
+            numbers[++numberTop] = Number;
             top++;
             return true;
         }
@@ -114,11 +119,66 @@ public class Grammar {
     }
 
     private static boolean isAddExp() {
-        return isMulExp();
+        if(isMulExp()){
+            return isAddExpPro();
+        }
+        return false;
+    }
+
+    private static boolean isAddExpPro(){
+        int staTop = top;
+        if(tokens[top].charAt(0) == '+' || tokens[top].charAt(0) == '-' ){
+            top++;
+            if(isMulExp() && isAddExpPro()){
+                System.out.println(numbers[numberTop-1] + " " + tokens[staTop].charAt(0) + " " + numbers[numberTop]);
+                numberTop--;
+                if(tokens[staTop].charAt(0) == '+'){
+                    numbers[numberTop] = numbers[numberTop] + numbers[numberTop+1]; 
+                }
+                else{
+                    numbers[numberTop] = numbers[numberTop] - numbers[numberTop+1]; 
+                }
+                return true;
+            }
+                
+            else
+                return false;
+        }
+        return true;
     }
 
     private static boolean isMulExp() {
-        return isUnaryExp();
+        if(isUnaryExp()){
+            return isMulExpPro();
+        }
+        
+        return false;
+    }
+
+    private static boolean isMulExpPro(){
+        int staTop = top;
+        if(tokens[top].charAt(0) == '*' || tokens[top].charAt(0) == '/' || 
+            tokens[top].charAt(0) == '%' ){
+            top++;
+            if(isUnaryExp() && isMulExpPro()){
+                System.out.println(tokens[staTop].charAt(0));
+                System.out.println(numbers[numberTop-1] + " " + tokens[staTop].charAt(0) + " " + numbers[numberTop]);
+                numberTop--;
+                if(tokens[staTop].charAt(0) == '*'){
+                    numbers[numberTop] = numbers[numberTop] * numbers[numberTop+1]; 
+                }
+                else if(tokens[staTop].charAt(0) == '/'){
+                    numbers[numberTop] = numbers[numberTop] / numbers[numberTop+1]; 
+                }
+                else{
+                    numbers[numberTop] = numbers[numberTop] % numbers[numberTop+1]; 
+                }
+                return true;
+            }
+            else
+                return false;
+        }
+        return true;
     }
 
     private static boolean isUnaryExp() {
