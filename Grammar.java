@@ -198,8 +198,14 @@ public class Grammar {
             return true;
         }
         top = staTop;
-        if (tokenCheck("(") && isExp() && tokenCheck(")")) {
-            return true;
+        if (tokenCheck("(") ) {
+            Boolean oldnegative = negative;
+            negative = false;
+            if(isExp()){
+                negative = oldnegative;
+                return tokenCheck(")");
+            }
+            return false;
         }
         return false;
     }
